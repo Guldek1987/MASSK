@@ -1,0 +1,77 @@
+model:
+  name: PRISM-Evidence
+  num_classes: 8
+  semantic_views:
+    - qwen
+    - specter2
+
+atomic_paths:
+  projection_width: 192
+  dropout: 0.10
+  optimizer: adamw
+  learning_rate: 0.0007
+  weight_decay: 0.004
+  max_epochs: 44
+  scheduler: cosine
+  batch_size: 384
+  gradient_clip: 2.0
+  label_smoothing: 0.025
+  seeds:
+    - 20260417
+    - 20260519
+    - 20260623
+
+interaction_path:
+  projection_width: 192
+  rank: 64
+  dropout: 0.12
+  residual_cap: 0.35
+  optimizer: adamw
+  learning_rate: 0.0008
+  weight_decay: 0.006
+  max_epochs: 45
+  batch_size: 512
+  gradient_clip: 2.0
+  label_smoothing: 0.02
+  atomic_auxiliary_weight: 0.12
+  seeds:
+    - 20260417
+    - 20260511
+    - 20260623
+
+evidence_router:
+  trainable_parameters: 22
+  alpha_range:
+    min: 0.20
+    max: 0.80
+  optimizer: adamw
+  learning_rate: 0.02
+  weight_decay: 0.03
+  max_epochs: 220
+  patience: 24
+  seeds:
+    - 20260721
+    - 20260731
+    - 20260807
+  evidence_features:
+    - confidence
+    - margin
+    - entropy
+    - cross_view_disagreement
+    - path_disagreement
+
+calibration:
+  method: temperature_scaling
+  selection_rule:
+    require_nll_improvement: true
+    require_brier_improvement: true
+    maximum_ece_increase: 0.001
+
+validation:
+  outer_repeats: 2
+  outer_folds: 3
+  grouping: duplicate_component
+  stratification:
+    - class
+    - source
+    - year
