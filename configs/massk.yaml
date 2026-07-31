@@ -1,0 +1,85 @@
+project:
+  name: MASSK
+  task: eight-class scientific publication classification
+  primary_metric: macro_f1
+  random_seed: 20260731
+
+data:
+  metadata: dataset/publication_metadata.parquet
+  publication_ids: data_manifest/publication_ids.csv
+  split_assignments: data_manifest/split_assignments.csv
+  duplicate_groups: data_manifest/duplicate_groups.csv
+  taxonomy: data_manifest/taxonomy_mapping.csv
+  text_fields:
+    - title
+    - abstract
+
+classes:
+  - Biochemistry, Genetics and Molecular Biology
+  - Computer Science
+  - Economics, Econometrics and Finance
+  - Engineering
+  - Materials Science
+  - Mathematics
+  - Medicine
+  - Physics and Astronomy
+
+encoders:
+  qwen:
+    model: Qwen/Qwen3-Embedding-0.6B
+    revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
+    pooling: last_token
+    normalize: true
+    max_length: 512
+    batch_size: 24
+    prefix: "Instruct: Represent the scientific paper for broad thematic classification into eight research fields.\nQuery: "
+  specter2:
+    model: allenai/specter2_base
+    revision: 3447645e1def9117997203454fa4495937bfbd83
+    adapter: allenai/specter2_classification
+    adapter_revision: d843816b414a856d9a5268d5865f188bb589e6e1
+    pooling: cls
+    normalize: true
+    max_length: 512
+    batch_size: 32
+    separator: " [SEP] "
+
+retrieval:
+  similarity: mean_cosine
+  index_scope: development
+  top_k: 5
+  softmax_temperature: 0.07
+  exclude_self_matches: true
+
+residual:
+  formulation: classwise_log_probability_residual
+  uncertainty: one_minus_max_base_probability
+  probability_floor: 1.0e-7
+  l2_penalty: 0.01
+  coefficients:
+    - 0.127662
+    - 0.034780
+    - 0.182610
+    - 0.092038
+    - 0.165421
+    - 0.138712
+    - 0.128050
+    - 0.136822
+
+evaluation:
+  decision_rule: argmax
+  bootstrap_iterations: 2000
+  confidence_level: 0.95
+  metrics:
+    - accuracy
+    - balanced_accuracy
+    - macro_f1
+    - weighted_f1
+    - macro_precision
+    - macro_recall
+    - mcc
+    - nll
+    - brier_multiclass
+    - ece_15
+    - error_auroc
+    - aurc

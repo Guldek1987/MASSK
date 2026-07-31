@@ -1,0 +1,9 @@
+class_id,class_name,description,target_type
+0,"Biochemistry, Genetics and Molecular Biology","Molecular and cellular life sciences, genetics, and biochemistry",broad_thematic_class
+1,Computer Science,"Algorithms, software, artificial intelligence, and computing systems",broad_thematic_class
+2,"Economics, Econometrics and Finance","Economics, econometrics, business, and financial systems",broad_thematic_class
+3,Engineering,"Engineering systems, design, manufacturing, and applied technologies",broad_thematic_class
+4,Materials Science,"Materials properties, synthesis, characterization, and applications",broad_thematic_class
+5,Mathematics,"Pure and applied mathematics, statistics, and formal methods",broad_thematic_class
+6,Medicine,"Clinical medicine, public health, diagnostics, and treatment",broad_thematic_class
+7,Physics and Astronomy,"Physics, astronomy, and related physical sciences",broad_thematic_class
