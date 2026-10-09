@@ -1,77 +1,94 @@
-model:
-  name: PRISM-Evidence
-  num_classes: 8
-  semantic_views:
-    - qwen
-    - specter2
+# Descriptive record of two distinct fitted predictors; not executable configuration.
+record_type: phase_specific_executed_settings
+name: PRISM-Evidence
+classes: 8
 
-atomic_paths:
-  projection_width: 192
-  dropout: 0.10
-  optimizer: adamw
-  learning_rate: 0.0007
-  weight_decay: 0.004
-  max_epochs: 44
-  scheduler: cosine
-  batch_size: 384
-  gradient_clip: 2.0
-  label_smoothing: 0.025
-  seeds:
-    - 20260417
-    - 20260519
-    - 20260623
+shared_paths:
+  semantic_views: [Qwen3, SPECTER2_classification]
+  atomic:
+    projection_width: 192
+    dropout: 0.10
+    optimizer: AdamW
+    learning_rate: 0.0007
+    weight_decay: 0.004
+    epoch_cap: 44
+    scheduler: cosine_annealing
+    batch_size: 384
+    gradient_clip: 2.0
+    label_smoothing: 0.025
+    seeds: [20260417, 20260519, 20260623]
+  interaction:
+    projection_width: 192
+    rank: 64
+    dropout: 0.12
+    residual_cap: 0.35
+    optimizer: AdamW
+    learning_rate: 0.0008
+    weight_decay: 0.006
+    epoch_cap: 45
+    batch_size: 512
+    gradient_clip: 2.0
+    label_smoothing: 0.02
+    atomic_auxiliary_weight: 0.12
+    seeds: [20260417, 20260511, 20260623]
+  router:
+    alpha_formula: "0.5 + 0.30 * tanh(score); exactly 0.5 when both paths predict the same class"
+    alpha_range: [0.20, 0.80]
+    optimizer: AdamW
+    learning_rate: 0.02
+    weight_decay: 0.03
+    epoch_cap: 220
+    patience: 24
+    earliest_patience_stop_epoch: 35
+    seeds: [20260721, 20260731, 20260807]
+    input_features:
+      - logit_interaction_confidence_minus_logit_consensus_confidence
+      - interaction_margin_minus_consensus_margin
+      - consensus_normalized_entropy_minus_interaction_normalized_entropy
+      - Jensen_Shannon_divergence_between_paths
+      - margin_of_equal_path_blend
+    feature_standardization: training_partition_mean_and_std
+    activation_gate:
+      minimum_stop_macro_f1_delta: 0.001
+      maximum_stop_nll_increase: 0.002
+      maximum_stop_brier_increase: 0.002
+    calibration_gate:
+      require_nll_strict_improvement: true
+      require_brier_nonworsening: true
+      maximum_ece_15_increase: 0.001
 
-interaction_path:
-  projection_width: 192
-  rank: 64
-  dropout: 0.12
-  residual_cap: 0.35
-  optimizer: adamw
-  learning_rate: 0.0008
-  weight_decay: 0.006
-  max_epochs: 45
-  batch_size: 512
-  gradient_clip: 2.0
-  label_smoothing: 0.02
-  atomic_auxiliary_weight: 0.12
-  seeds:
-    - 20260417
-    - 20260511
-    - 20260623
-
-evidence_router:
-  trainable_parameters: 22
-  alpha_range:
-    min: 0.20
-    max: 0.80
-  optimizer: adamw
-  learning_rate: 0.02
-  weight_decay: 0.03
-  max_epochs: 220
-  patience: 24
-  seeds:
-    - 20260721
-    - 20260731
-    - 20260807
-  evidence_features:
-    - confidence
-    - margin
-    - entropy
-    - cross_view_disagreement
-    - path_disagreement
-
-calibration:
-  method: temperature_scaling
-  selection_rule:
-    require_nll_improvement: true
-    require_brier_improvement: true
-    maximum_ece_increase: 0.001
-
-validation:
+development_predictor:
+  authority: "Notebooks/04_massk_training_and_ablations.ipynb, section 18.4 Validation-driven pruning decision"
+  router_mode: evidence_only_minus_class_priors
+  router_parameters_per_fit: 6
+  router_parameter_definition: one_intercept_plus_five_evidence_coefficients
+  predicted_class_priors: absent
+  grouping: author_institution_component
+  stratification: class_label
   outer_repeats: 2
   outer_folds: 3
-  grouping: duplicate_component
-  stratification:
-    - class
-    - source
-    - year
+  outer_assignment_seeds: [20267181, 20268181]
+  estimate: "Average repeated outer-held probabilities per development publication; no stress rows."
+  rows: 6708
+  macro_f1: 0.8052753988594105
+  status: exploratory_pruned_development_candidate
+
+retrospective_stress_predictor:
+  authority: "Notebooks/05_evaluation_and_results.ipynb, section 12; recorded stress fit audit and frozen specification"
+  candidate_router_parameters_per_fit: 22
+  candidate_parameter_definition: one_intercept_plus_five_evidence_coefficients_plus_two_eight_class_priors
+  fixed_development_repeat: 0
+  path_fit_rows: 4472
+  path_stop_rows: 2236
+  path_stop_outer_fold: 0
+  router_fit_rows: 2236
+  router_stop_rows: 2236
+  router_calibration_rows: 2236
+  router_stop_outer_fold: 0
+  router_calibration_outer_fold: 1
+  router_active_by_seed: [false, false, false]
+  router_temperature_by_seed: [1.0, 1.0, 1.0]
+  effective_comparator: "Exact equal blend of atomic consensus and interaction path; trained router corrections inactive."
+  fit_audit_file: results/stress_model_fit_audit.csv
+  status: frozen_retrospective_stress_comparator
+  relation_to_development: "Same named model family, separately fitted predictor and activation outcome; not the identical six-parameter fitted development comparator."

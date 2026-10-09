@@ -1,0 +1,27 @@
+scope,component,recorded_value,source_filename
+development_notebook_execution,numpy,2.4.4,notebook04_execution_environment.csv
+development_notebook_execution,pandas,3.0.3,notebook04_execution_environment.csv
+development_notebook_execution,scipy,1.17.1,notebook04_execution_environment.csv
+development_notebook_execution,scikit-learn,1.9.0,notebook04_execution_environment.csv
+development_notebook_execution,pyarrow,24.0.0,notebook04_execution_environment.csv
+development_notebook_execution,joblib,1.5.3,notebook04_execution_environment.csv
+development_notebook_execution,matplotlib,3.11.0,notebook04_execution_environment.csv
+development_notebook_execution,torch,2.12.1+cu130,notebook04_execution_environment.csv
+development_notebook_execution,python,3.12.3,notebook04_execution_environment.csv
+development_notebook_execution,cuda_runtime,13.0,notebook04_execution_environment.csv
+development_notebook_execution,nvidia_driver,610.62,notebook04_execution_environment.csv
+development_notebook_execution,gpu,NVIDIA GeForce RTX 5070 Laptop GPU,notebook04_execution_environment.csv
+development_notebook_execution,deterministic_algorithms,True,notebook04_execution_environment.csv
+development_notebook_execution,cublas_workspace_config,:4096:8,notebook04_execution_environment.csv
+retrospective_raw_text_benchmark: same benchmark session,GPU model,NVIDIA GeForce RTX 5070 Laptop GPU,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: same benchmark session,CUDA runtime,13.0,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: same benchmark session,PyTorch,2.12.1+cu130,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: same benchmark session,Python,3.12.3,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: same benchmark session,Operating system,Linux-6.18.33.1-microsoft-standard-WSL2-x86_64-with-glibc2.39,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: same benchmark session,CPU model,Intel(R) Core(TM) i7-14650HX,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: all neural and retrieval inference on CUDA,CPU fallback,Prohibited and not used,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: main benchmark process,Transformers (Qwen3 runtime),5.12.1,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: main benchmark process,Sentence-Transformers,5.6.0,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: persistent adapter worker,Transformers (SPECTER2 worker),4.57.6,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: persistent adapter worker,Adapters,1.3.0,retrospective_stress_end_to_end_resources.csv
+retrospective_raw_text_benchmark: both pinned runtimes,Tokenizers,0.22.2,retrospective_stress_end_to_end_resources.csv
