@@ -1,22 +1,22 @@
 cohort,row_type,model_or_contrast,n,metric,value,ci_lower,ci_upper,ci_level,resampling_unit,preferred_direction,interpretation
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Accuracy,0.7732497387669801,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Balanced Accuracy,0.7740366701128759,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Macro-F1,0.7732254054960036,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,MCC,0.7412885935693263,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,NLL,0.6645846005230038,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Brier score,0.3307330033794463,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,ECE-15,0.04333831473054,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Error AUROC,0.7661259185452733,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,PRISM-Evidence,1914,AURC,0.0992542365964219,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,Accuracy,0.7774294670846394,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,Balanced Accuracy,0.7782450604251703,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,Macro-F1,0.7772231250787772,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,MCC,0.7461552910617464,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,NLL,0.6614404741238097,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,Brier score,0.3299074765527344,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,ECE-15,0.0470486409893318,,,,,lower,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,Error AUROC,0.7616660987429957,,,,,higher,point_estimate
-Temporal 2025 stress,model_metric,MASSK,1914,AURC,0.0982773548636408,,,,,lower,point_estimate
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Accuracy,0.7732497387669801,0.7549634273772204,0.7915360501567398,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Balanced Accuracy,0.7740366701128759,0.7561500087423005,0.7921121945783202,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Macro-F1,0.7732254054960036,0.7547583273897793,0.7908131650121769,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,MCC,0.7412885935693263,0.7201282965306235,0.7618822925343494,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,NLL,0.6645846005230038,0.6200499277637347,0.7129607299531471,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Brier score,0.3307330033794463,0.3079597860580772,0.35551633071408334,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,ECE-15,0.04333831473054,0.031173719150579485,0.06291992653402637,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,Error AUROC,0.7661259185452733,0.7417605420190642,0.7894631440375147,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,PRISM-Evidence,1914,AURC,0.0992542365964219,0.08564366886144888,0.11382475030329191,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,Accuracy,0.7774294670846394,0.7586206896551724,0.7941483803552769,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,Balanced Accuracy,0.7782450604251703,0.7597748473837248,0.7943933022641372,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,Macro-F1,0.7772231250787772,0.7582358135646242,0.7933855610479659,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,MCC,0.7461552910617464,0.7249409877488855,0.7651281603489951,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,NLL,0.6614404741238097,0.6153024825160393,0.7121571781905215,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,Brier score,0.3299074765527344,0.30754911991100337,0.35441552563285394,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,ECE-15,0.0470486409893318,0.035885655036251234,0.06695201933909568,95%,document,lower,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,Error AUROC,0.7616660987429957,0.7365999203790446,0.7860422605029639,95%,document,higher,point_estimate_with_document_bootstrap_interval
+Temporal 2025 stress,model_metric,MASSK,1914,AURC,0.0982773548636408,0.08544405264961155,0.11255536587335077,95%,document,lower,point_estimate_with_document_bootstrap_interval
 Temporal 2025 stress,paired_delta,MASSK minus PRISM-Evidence,1914,Accuracy,0.0041797283176593,-0.0010449320794148,0.0099268547544409,95%,paired document,positive,uncertain
 Temporal 2025 stress,paired_delta,MASSK minus PRISM-Evidence,1914,Balanced Accuracy,0.0042083903122943,-0.0010294708001718,0.0100317834340456,95%,paired document,positive,uncertain
 Temporal 2025 stress,paired_delta,MASSK minus PRISM-Evidence,1914,Macro-F1,0.0039977195827736,-0.0010494171146595,0.0097336840281797,95%,paired document,positive,uncertain

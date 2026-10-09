@@ -1,85 +1,101 @@
-project:
+# Descriptive record of the executed notebook experiment, not a training CLI.
+record_type: executed_experiment_settings
+authority:
+  notebook: Notebooks/04_massk_training_and_ablations.ipynb
+  section: "22. Class-wise retrieval residual / Executable Round-14 replay"
+  equivalence_boundary: "The notebook implementation and recorded artifacts define the experiment. This YAML does not execute or replace them."
+
+model:
   name: MASSK
   task: eight-class scientific publication classification
-  primary_metric: macro_f1
-  random_seed: 20260731
+  classes: 8
+  formula: "log(p_base) + (1 - max(p_base)) * gamma_class * (log(p_knn) - log(p_base))"
+  probability_floor: 1.0e-7
 
-data:
-  metadata: dataset/publication_metadata.parquet
-  publication_ids: data_manifest/publication_ids.csv
-  split_assignments: data_manifest/split_assignments.csv
-  duplicate_groups: data_manifest/duplicate_groups.csv
-  taxonomy: data_manifest/taxonomy_mapping.csv
-  text_fields:
-    - title
-    - abstract
+development:
+  rows: 6708
+  source_roles_pooled: [train, validation]
+  outer_repeats: 2
+  outer_folds: 3
+  outer_assignment_seeds: [20267181, 20268181]
+  stratification: class_label
+  grouping: author_institution_component
+  grouping_definition: "Transitive high-precision author-name plus paper-level institutional-context proxy; only integer group IDs are released."
+  outer_assignment_file: data_manifest/nested_fold_assignments.csv
+  inner_assignment_file: data_manifest/inner_fold_assignments.csv
+  base_posterior: "Development PRISM-Evidence; six-parameter evidence-only router after removal of predicted-class priors."
+  fitting_rows: "Cross-fitted inner-OOF rows inside each outer-training context."
+  retrieval_index: "Corresponding inner-training rows for coefficient fitting; outer-training rows for outer-held prediction."
+  coefficients:
+    parameterization: sigmoid_of_eight_raw_parameters
+    initial_gamma: 0.15
+    optimizer: Adam
+    learning_rate: 0.05
+    iterations: 300
+    batch: full
+    class_weight: "n / (8 * class_count)"
+    loss: "class-weighted cross-entropy + 0.01 * mean(gamma ** 2)"
+    state_selection: "Lowest observed training objective over all 300 iterations; no patience-based early stopping."
+    device: CUDA
+    per_context_values: results/development_classwise_coefficients.csv
+  paper_aggregation: "Average held-out posterior over the two outer repeats before computing common-panel metrics."
+  statistical_evaluation:
+    primary_metric: macro_f1
+    bootstrap_iterations: 20000
+    primary_bootstrap_seed: 20260731
+    proxy_cluster_bootstrap_seed: 20260732
+    secondary_reliability_seed: 20260741
+    materiality_threshold: 0.003
+    classification_superiority_gate_passed: false
+    scope: exploratory_post_selection_development_validation
+    secondary_intervals: nominal_post_hoc_unadjusted
 
-classes:
-  - Biochemistry, Genetics and Molecular Biology
-  - Computer Science
-  - Economics, Econometrics and Finance
-  - Engineering
-  - Materials Science
-  - Mathematics
-  - Medicine
-  - Physics and Astronomy
+retrieval:
+  similarity: mean_Qwen3_SPECTER2_cosine
+  top_k: 5
+  softmax_temperature: 0.07
+  vectors: L2_normalized
+
+retrospective_stress:
+  temporal_rows: 1914
+  external_rows: 1181
+  coefficient_selection: "Arithmetic mean of the six development-fitted coefficient vectors, read as NumPy float (float64) in the stress implementation."
+  coefficients_file: results/stress_classwise_coefficients.csv
+  coefficient_fitting_on_stress: false
+  retrieval_index_rows: 6708
+  base_posterior: "Separately frozen stress PRISM predictor: the 22-parameter router candidate failed activation in all three fits and reduces to the exact 0.5 path blend."
+  bootstrap_iterations: 2000
+  bootstrap_seed: 20260730
+  resampling_unit: document
+  scope: retrospective_stress_not_independent_confirmation
 
 encoders:
+  recorded_scope: retrospective_raw_text_benchmark
   qwen:
     model: Qwen/Qwen3-Embedding-0.6B
     revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
     pooling: last_token
-    normalize: true
     max_length: 512
     batch_size: 24
+    normalize: true
     prefix: "Instruct: Represent the scientific paper for broad thematic classification into eight research fields.\nQuery: "
   specter2:
     model: allenai/specter2_base
     revision: 3447645e1def9117997203454fa4495937bfbd83
     adapter: allenai/specter2_classification
     adapter_revision: d843816b414a856d9a5268d5865f188bb589e6e1
-    pooling: cls
-    normalize: true
+    pooling: CLS
     max_length: 512
     batch_size: 32
-    separator: " [SEP] "
+    normalize: true
+    input: "title + tokenizer.sep_token + abstract"
 
-retrieval:
-  similarity: mean_cosine
-  index_scope: development
-  top_k: 5
-  softmax_temperature: 0.07
-  exclude_self_matches: true
-
-residual:
-  formulation: classwise_log_probability_residual
-  uncertainty: one_minus_max_base_probability
-  probability_floor: 1.0e-7
-  l2_penalty: 0.01
-  coefficients:
-    - 0.127662
-    - 0.034780
-    - 0.182610
-    - 0.092038
-    - 0.165421
-    - 0.138712
-    - 0.128050
-    - 0.136822
-
-evaluation:
-  decision_rule: argmax
-  bootstrap_iterations: 2000
-  confidence_level: 0.95
-  metrics:
-    - accuracy
-    - balanced_accuracy
-    - macro_f1
-    - weighted_f1
-    - macro_precision
-    - macro_recall
-    - mcc
-    - nll
-    - brier_multiclass
-    - ece_15
-    - error_auroc
-    - aurc
+recorded_runtime:
+  scope: development_residual_CUDA_replay_and_separate_retrospective_encoder_processes
+  python: 3.12.3
+  torch: 2.12.1+cu130
+  cuda: "13.0"
+  qwen_transformers: 5.12.1
+  specter2_worker_transformers: 4.57.6
+  adapters: 1.3.0
+  runtime_separation: "Qwen3 main process and isolated SPECTER2 adapter worker used different transformers versions."

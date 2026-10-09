@@ -1,22 +1,22 @@
 cohort,row_type,model_or_contrast,n,metric,value,ci_lower,ci_upper,ci_level,resampling_unit,preferred_direction,interpretation
-External arXiv stress,model_metric,PRISM-Evidence,1181,Accuracy,0.5596951735817104,,,,,higher,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,Balanced Accuracy,0.5604190447969377,,,,,higher,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,Macro-F1,0.5509384605303429,,,,,higher,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,MCC,0.5086821060772264,,,,,higher,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,NLL,1.5146944498633934,,,,,lower,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,Brier score,0.6571869132784938,,,,,lower,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,ECE-15,0.2136640317172817,,,,,lower,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,Error AUROC,0.6657191900384034,,,,,higher,point_estimate
-External arXiv stress,model_metric,PRISM-Evidence,1181,AURC,0.3149873885599887,,,,,lower,point_estimate
-External arXiv stress,model_metric,MASSK,1181,Accuracy,0.5596951735817104,,,,,higher,point_estimate
-External arXiv stress,model_metric,MASSK,1181,Balanced Accuracy,0.5605182388909391,,,,,higher,point_estimate
-External arXiv stress,model_metric,MASSK,1181,Macro-F1,0.5498845553573783,,,,,higher,point_estimate
-External arXiv stress,model_metric,MASSK,1181,MCC,0.5092084149644697,,,,,higher,point_estimate
-External arXiv stress,model_metric,MASSK,1181,NLL,1.5614405247602572,,,,,lower,point_estimate
-External arXiv stress,model_metric,MASSK,1181,Brier score,0.6693015154275377,,,,,lower,point_estimate
-External arXiv stress,model_metric,MASSK,1181,ECE-15,0.2366929293160301,,,,,lower,point_estimate
-External arXiv stress,model_metric,MASSK,1181,Error AUROC,0.6650878622134295,,,,,higher,point_estimate
-External arXiv stress,model_metric,MASSK,1181,AURC,0.3153052468099799,,,,,lower,point_estimate
+External arXiv stress,model_metric,PRISM-Evidence,1181,Accuracy,0.5596951735817104,0.5317527519051651,0.5876375952582558,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,Balanced Accuracy,0.5604190447969377,0.5356472797535686,0.5848956049414791,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,Macro-F1,0.5509384605303429,0.5220577150061931,0.578342238152319,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,MCC,0.5086821060772264,0.4788824762715864,0.5382546327453698,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,NLL,1.5146944498633934,1.4144860298318471,1.6175261472066502,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,Brier score,0.6571869132784938,0.6182482714407954,0.6966173650854632,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,ECE-15,0.2136640317172817,0.18898559762391273,0.24087306403844624,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,Error AUROC,0.6657191900384034,0.6358738989538456,0.6968537254924495,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,PRISM-Evidence,1181,AURC,0.3149873885599887,0.28182390305832955,0.34819123153632014,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,Accuracy,0.5596951735817104,0.5325994919559696,0.5884843353090601,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,Balanced Accuracy,0.5605182388909391,0.5340815065207773,0.5872281871215154,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,Macro-F1,0.5498845553573783,0.5204690817576073,0.5781408683170777,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,MCC,0.5092084149644697,0.47882486734417573,0.5409467029651969,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,NLL,1.5614405247602572,1.4549963433542898,1.6724797009008512,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,Brier score,0.6693015154275377,0.6279703461789339,0.7120257073515346,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,ECE-15,0.2366929293160301,0.2101725954291494,0.2655137684718265,95%,document,lower,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,Error AUROC,0.6650878622134295,0.6341323028424042,0.6961696250829027,95%,document,higher,point_estimate_with_document_bootstrap_interval
+External arXiv stress,model_metric,MASSK,1181,AURC,0.3153052468099799,0.2819967788313034,0.35116559022695665,95%,document,lower,point_estimate_with_document_bootstrap_interval
 External arXiv stress,paired_delta,MASSK minus PRISM-Evidence,1181,Accuracy,0.0,-0.0067739204064352,0.0059271803556308,95%,paired document,positive,uncertain
 External arXiv stress,paired_delta,MASSK minus PRISM-Evidence,1181,Balanced Accuracy,9.91940940013869e-05,-0.0063380660683366,0.0060742209022045,95%,paired document,positive,uncertain
 External arXiv stress,paired_delta,MASSK minus PRISM-Evidence,1181,Macro-F1,-0.0010539051729645,-0.008779078485317,0.0057978765916735,95%,paired document,positive,uncertain
