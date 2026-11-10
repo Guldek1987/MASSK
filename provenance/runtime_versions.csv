@@ -25,3 +25,25 @@ retrospective_raw_text_benchmark: main benchmark process,Sentence-Transformers,5
 retrospective_raw_text_benchmark: persistent adapter worker,Transformers (SPECTER2 worker),4.57.6,retrospective_stress_end_to_end_resources.csv
 retrospective_raw_text_benchmark: persistent adapter worker,Adapters,1.3.0,retrospective_stress_end_to_end_resources.csv
 retrospective_raw_text_benchmark: both pinned runtimes,Tokenizers,0.22.2,retrospective_stress_end_to_end_resources.csv
+revision_notebook_execution,python,3.11.15,rev01_environment.yaml
+revision_notebook_execution,torch,2.11.0,rev01_environment.yaml
+revision_notebook_execution,transformers,5.7.0,rev01_environment.yaml
+revision_notebook_execution,huggingface_hub,1.12.2,rev01_environment.yaml
+revision_notebook_execution,tokenizers,0.22.2,rev01_environment.yaml
+revision_notebook_execution,safetensors,0.7.0,rev01_environment.yaml
+revision_notebook_execution,numpy,2.4.4,rev01_environment.yaml
+revision_notebook_execution,pandas,2.3.3,rev01_environment.yaml
+revision_notebook_execution,scipy,1.16.3,rev01_environment.yaml
+revision_notebook_execution,scikit-learn,1.8.0,rev01_environment.yaml
+revision_notebook_execution,pyarrow,24.0.0,rev01_environment.yaml
+revision_notebook_execution,PyYAML,6.0.3,rev01_environment.yaml
+revision_notebook_execution,pillow,12.2.0,rev01_environment.yaml
+revision_notebook_execution,requests,2.33.1,rev01_environment.yaml
+revision_notebook_execution,matplotlib,3.10.9,rev01_environment.yaml
+revision_notebook_execution,jupyterlab,4.5.6,rev01_environment.yaml
+revision_notebook_execution,ipykernel,7.2.0,rev01_environment.yaml
+revision_notebook_execution,nbformat,5.10.4,rev01_environment.yaml
+revision_notebook_execution,operating_system,macOS 27.2 arm64,rev01_environment.yaml
+revision_notebook_execution,hardware,Apple M1 Pro 16 GB,rev01_environment.yaml
+revision_notebook_execution,encoder_device,Apple GPU (MPS backend) float32,rev01_environment.yaml
+revision_notebook_execution,other_stages_device,CPU float32,rev01_environment.yaml

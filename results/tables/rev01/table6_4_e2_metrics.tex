@@ -1,0 +1,15 @@
+\begin{tabular}{llrrrrrr}
+\toprule
+variant\_id & variant & nll\_mean & nll\_sd & macro\_f1\_mean & macro\_f1\_sd & contexts\_full\_lower\_nll & contexts\_full\_higher\_macro\_f1 \\
+\midrule
+V0 & PRISM-Evidence & $0.56754$ & $0.027329$ & $0.797638$ & $0.0100261$ & 6 & 5 \\
+V1 & MASSK (Full) & $0.559161$ & $0.0289594$ & $0.799947$ & $0.0102032$ & 0 & 0 \\
+V2 & Shared γ & $0.557905$ & $0.0284481$ & $0.800253$ & $0.010828$ & 1 & 3 \\
+V3 & No multiplier & $0.55856$ & $0.0298103$ & $0.800048$ & $0.0102932$ & 2 & 3 \\
+V4 & Shared γ, no multiplier & $0.557693$ & $0.029146$ & $0.799812$ & $0.0104482$ & 1 & 3 \\
+V5 & kNN only & $1.38999$ & $0.103486$ & $0.780586$ & $0.00669136$ & 6 & 6 \\
+C1 & Temperature scaling & $0.565838$ & $0.0287597$ & $0.797638$ & $0.0100261$ & 6 & 5 \\
+C2 & Class bias & $0.570182$ & $0.0272859$ & $0.797289$ & $0.0113235$ & 6 & 5 \\
+C3 & Vector scaling & $0.566826$ & $0.028841$ & $0.797257$ & $0.0111261$ & 6 & 4 \\
+\bottomrule
+\end{tabular}

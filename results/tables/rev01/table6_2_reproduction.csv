@@ -1,0 +1,7 @@
+quantity,recorded,recomputed,max_abs_difference
+"(i) Posteriors with the recorded coefficients (13,416 rows × 8 classes)",-1.0,-1.0,1.786497406675025e-07
+(ii) Class-wise coefficients γ refitted on CPU (6 contexts × 8 classes),-1.0,-1.0,0.0005797582225159428
+"(ii) Posteriors with the refitted coefficients (13,416 rows × 8 classes)",-1.0,-1.0,0.0011484612617519985
+PRISM-Evidence paper-level NLL,0.5552421253664074,0.5552421253664074,0.0
+MASSK paper-level NLL,0.5448057651519775,0.5448036708106815,2.0943412960550134e-06
+MASSK paper-level macro-F1,0.8057312941248218,0.8057312941248218,0.0

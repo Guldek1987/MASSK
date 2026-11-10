@@ -1,0 +1,5 @@
+variant_id,variant,nll_frozen_system,nll_section_9_this_run,max_abs_posterior_difference
+V0,PRISM-Evidence,0.6596797685951261,0.6596797685951261,0.0
+V1,MASSK (Full),0.6583271746120563,0.6583271746120563,0.0
+V4,"Shared γ, no multiplier",0.6586961011050293,0.6586961011050293,0.0
+C1,Temperature scaling,0.6606207300485606,0.6606207300485606,0.0

@@ -1,0 +1,28 @@
+# Environment that executed notebook 06 (run rev01).
+# Versions were read from the kernel environment on 2026-11-10, the day of execution.
+# Observed versions; this file is not a tested installation lock.
+run_id: rev01
+python: 3.11.15
+platform: macOS 27.2, arm64
+hardware: Apple M1 Pro, 16 GB
+devices:
+  encoders: Apple GPU (MPS backend), float32
+  heads_retrieval_statistics: CPU, float32
+packages:
+  torch: 2.11.0
+  transformers: 5.7.0
+  huggingface_hub: 1.12.2
+  tokenizers: 0.22.2
+  safetensors: 0.7.0
+  numpy: 2.4.4
+  pandas: 2.3.3
+  scipy: 1.16.3
+  scikit-learn: 1.8.0
+  pyarrow: 24.0.0
+  PyYAML: 6.0.3
+  pillow: 12.2.0
+  requests: 2.33.1
+  matplotlib: 3.10.9
+  jupyterlab: 4.5.6
+  ipykernel: 7.2.0
+  nbformat: 5.10.4

@@ -1,0 +1,9 @@
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+base\_id & base & fit\_rows & stop\_rows & pilot\_rows\_in\_fit & trainable\_parameters & stop\_nll & stop\_macro\_f1 & gamma\_v2 & gamma\_v4 & temperature\_c1 \\
+\midrule
+B0 & Frozen recorded model & 4472 & 2236 & 768 & 2230827 & $0.571785$ & $0.795406$ & $0.0782668$ & $0.0267908$ & $0.963301$ \\
+B1 & Refit, same rows & 4472 & 2236 & 768 & 2230827 & $0.586745$ & $0.795649$ & $0.0843198$ & $0.0268334$ & $0.993297$ \\
+B2 & Refit without pilot rows & 3704 & 1828 & 0 & 2230827 & $0.59351$ & $0.783499$ & $0.0666504$ & $0.021903$ & $0.978962$ \\
+\bottomrule
+\end{tabular}

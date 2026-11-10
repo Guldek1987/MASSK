@@ -1,0 +1,3 @@
+encoder,publications,mean_cosine,min_cosine,share_at_least_0999_percent
+Qwen3-Embedding-0.6B,1914,0.9999061226844788,0.9997837543487549,100.0
+SPECTER2 base + classification adapter,1914,0.9999915957450867,0.999984622001648,100.0

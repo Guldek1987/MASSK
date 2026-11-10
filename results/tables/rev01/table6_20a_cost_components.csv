@@ -1,0 +1,6 @@
+component,status,parameters,fit_seconds
+Qwen3-Embedding-0.6B encoder,frozen,595776512,0.0
+SPECTER2 base with classification adapter,frozen,110222400,0.0
+Base B2: nine path models,trained,2230827,12.140072000001965
+Correction V1: class-wise coefficients,trained,8,0.11719750000338536
+Correction V4: one shared coefficient,trained,1,0.1083580839986098

@@ -1,0 +1,115 @@
+run_id: rev01
+protocol: Docs/research_protocol_rev01.md
+seed: 20261105
+classes: 8
+inputs:
+  development: dataset/unified/development_dataset.parquet
+  qwen3: dataset/unified/development_semantic_qwen3_instruction.npy
+  specter2: dataset/unified/development_semantic_specter2_classification.npy
+  outer_folds: results/tables/nested_fold_assignments.parquet
+  inner_folds: results/tables/massk_round10_inner_path_oof.parquet
+  prism_inner_oof: results/tables/massk_round12_prism_inner_oof.parquet
+  prism_outer: results/tables/massk_prism_evidence_outer_predictions.parquet
+  massk_outer_reference: results/tables/massk_round14_outer_predictions.parquet
+  massk_gamma_reference: results/tables/massk_round14_classwise_coefficients.csv
+  massk_metrics_reference: results/tables/massk_round14_model_comparison.csv
+retrieval_default:
+  top_k: 5
+  temperature: 0.07
+  probability_floor: 1.0e-7
+fitting:
+  optimizer: adam
+  learning_rate: 0.05
+  iterations: 300
+  gamma_init: 0.15
+  gamma_penalty: 0.01
+  class_weighting: balanced
+statistics:
+  bootstrap_iterations: 20000
+  alpha: 0.05
+  multiplicity: holm
+  f1_tolerance: 0.003
+  ece_bins: 15
+sensitivity:
+  top_k: [1, 3, 5, 10, 20, 50]
+  temperature: [0.02, 0.05, 0.07, 0.10, 0.20, 0.50]
+  probability_floor: [1.0e-7, 1.0e-5, 1.0e-3, 1.0e-2]
+retrieval_eval_cutoff: 10
+replay_tolerance: 1.0e-3
+outputs:
+  tables: results/tables/rev01
+  figures_png: results/figures/rev01/png
+  figures_pdf: results/figures/rev01/pdf
+
+step2:
+  inputs:
+    full_dataset: dataset/unified/modeling_dataset.parquet
+    full_qwen3: dataset/unified/semantic_embeddings_qwen3_0_6b.npy
+    full_specter2: dataset/unified/semantic_embeddings_specter2_classification.npy
+    split_indices: dataset/unified/split_indices.npz
+    frozen_bundle: results/models/massk_artifacts/retrospective_stress_model_bundle_v2.pt
+    recorded_predictions: results/tables/retrospective_stress_predictions.parquet
+    dual_path_outer: results/tables/massk_dual_path_outer_predictions.parquet
+  base:
+    core_seeds: [20260417, 20260519, 20260623]
+    interaction_seeds: [20260417, 20260511, 20260623]
+    d_model: 192
+    core_dropout: 0.10
+    core_lr: 0.0007
+    core_weight_decay: 0.004
+    core_max_epochs: 44
+    core_batch: 384
+    core_label_smoothing: 0.025
+    interaction_rank: 64
+    interaction_dropout: 0.12
+    interaction_cap: 0.35
+    interaction_lr: 0.0008
+    interaction_weight_decay: 0.006
+    interaction_max_epochs: 45
+    interaction_batch: 512
+    interaction_label_smoothing: 0.02
+    interaction_auxiliary_weight: 0.12
+    gradient_clip: 2.0
+  similarity_threshold: 0.757
+  agreement_bins: [0.60, 1.0]
+  encoders:
+    qwen3:
+      model: Qwen/Qwen3-Embedding-0.6B
+      revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
+      batch_size: 24
+      prefix: "Instruct: Represent the scientific paper for broad thematic classification into eight research fields.\nQuery: "
+    specter2:
+      model: allenai/specter2_base
+      revision: 3447645e1def9117997203454fa4495937bfbd83
+      adapter: allenai/specter2_classification
+      adapter_revision: d843816b414a856d9a5268d5865f188bb589e6e1
+      batch_size: 32
+    max_length: 512
+  perturbations:
+    truncation_fractions: [0.50, 0.25]
+    deletion_rates: [0.10, 0.30]
+    encoder_check_min_mean_cosine: 0.999
+  embedding_cache: dataset/unified/rev01_step2_temporal_embeddings.npz
+  timing_repetitions: 5
+
+step3:
+  relevance:
+    raw_records: dataset/raw/openalex
+    gains: {topic: 3, subfield: 2, field: 1}
+  confirmation:
+    frozen_system: results/models/rev01/frozen_system_b2.pt
+    frozen_system_sha256: c5adf21f83d0829e8aa731558e8b69bb538e1fa9b869814b7154e8e32f564ef6
+    temporal_reference_nll: {V0: 0.659680, V1: 0.658327}
+    endpoint: https://api.openalex.org/works
+    date_range: ["2018-01-01", "2024-12-31"]
+    sample_per_request: 200
+    seeds: [20269024, 20276943, 20284862]
+    select: id,ids,doi,title,display_name,abstract_inverted_index,publication_year,publication_date,language,type,primary_topic,keywords,referenced_works,cited_by_count
+    raw_prefix: dataset/raw/openalex/confirmation_rev01
+    min_title_tokens: 4
+    min_abstract_tokens: 30
+    near_duplicate_threshold: 0.94
+    embedding_cache: dataset/unified/rev01_step3_confirmation_embeddings.npz
+    cohort_table: dataset/unified/rev01_step3_confirmation_cohort.parquet
+    label_recheck_prefix: dataset/raw/openalex/label_recheck_rev01
+    label_recheck_batch: 50

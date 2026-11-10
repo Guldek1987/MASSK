@@ -8,6 +8,8 @@ The executed notebooks are the authoritative implementation. This compact releas
 
 Development validation and retrospective stress evaluation use different fitted predictors. Their configurations and conclusions are distinguished below. See [reproduction scope and provenance](REPRODUCIBILITY.md) for the exact boundary of the release.
 
+Notebook 06 (run `rev01`) adds a controlled study of the correction: ablations of its two elements, calibration controls, a stress evaluation in which the base and the correction follow one specification, raw-text perturbations, computational cost, topic-level relevance of the retrieved neighbours, and a prespecified confirmation on newly acquired publications. Its results are summarised in [Revision analyses](#revision-analyses-run-rev01); where its conclusions differ from the earlier sections, the differences are stated there.
+
 ## Repository structure
 
 ```text
@@ -17,7 +19,8 @@ MASSK/
 │   ├── 02_preprocessing_features_and_splits.ipynb
 │   ├── 03_baselines_and_comparators.ipynb
 │   ├── 04_massk_training_and_ablations.ipynb
-│   └── 05_evaluation_and_results.ipynb
+│   ├── 05_evaluation_and_results.ipynb
+│   └── 06_revision_ablations_and_corrected_evaluation.ipynb
 ├── dataset/
 │   └── publication_metadata.parquet
 ├── data_manifest/
@@ -25,11 +28,16 @@ MASSK/
 │   ├── taxonomy_mapping.csv
 │   ├── duplicate_groups.csv
 │   ├── split_assignments.csv
+│   ├── confirmation_cohort_ids.csv
 │   ├── nested_fold_assignments.csv
 │   └── inner_fold_assignments.csv
 ├── configs/
 │   ├── massk.yaml
-│   └── prism_evidence.yaml
+│   ├── prism_evidence.yaml
+│   ├── rev01_experiment.yaml
+│   └── rev01_environment.yaml
+├── docs/
+│   └── research_protocol_rev01.md
 ├── results/
 │   ├── development_results.csv
 │   ├── temporal_test_results.csv
@@ -37,7 +45,9 @@ MASSK/
 │   ├── per_class_results.csv
 │   ├── development_classwise_coefficients.csv
 │   ├── stress_classwise_coefficients.csv
-│   └── stress_model_fit_audit.csv
+│   ├── stress_model_fit_audit.csv
+│   ├── tables/rev01/      # tables of Notebook 06 (CSV, LaTeX), figure data, result registry
+│   └── figures/rev01/     # five figures (PNG, PDF)
 ├── provenance/
 │   ├── notebook_manifest.csv
 │   ├── runtime_versions.csv
@@ -78,6 +88,7 @@ The retained collection contains 7,446 OpenAlex records, 1,176 directly acquired
 | [`split_assignments.csv`](data_manifest/split_assignments.csv) | 9,803 | Train, validation, temporal, and external cohort assignments |
 | [`nested_fold_assignments.csv`](data_manifest/nested_fold_assignments.csv) | 13,416 | Original outer holdout assignments: 6,708 publications × 2 repeats, with anonymous author–institution proxy groups |
 | [`inner_fold_assignments.csv`](data_manifest/inner_fold_assignments.csv) | 26,832 | Original inner cross-fitting assignments within the six outer-training contexts |
+| [`confirmation_cohort_ids.csv`](data_manifest/confirmation_cohort_ids.csv) | 2,940 | Identifiers, year and class of the confirmation cohort acquired on 10 November 2026; these publications are not part of the 9,803 corpus records |
 
 ### Corpus composition
 
@@ -194,6 +205,103 @@ The development PRISM-Evidence router has **six parameters** (one intercept and 
 
 Full metric rows and confidence intervals are available in [`results/`](results/).
 
+## Revision analyses (run rev01)
+
+Notebook 06 re-examines the correction under a protocol written in three parts, each before the corresponding analyses were executed ([protocol](docs/research_protocol_rev01.md), [settings](configs/rev01_experiment.yaml)). The development and stress analyses are post hoc or retrospective: the development panel had already been used for model selection, and both stress cohorts had been evaluated before. The confirmation on newly acquired publications is the only prespecified test. NLL is the primary endpoint. In this section Δ > 0 favours the first-named variant; for losses this is the opposite of the sign used in the two sections above, where differences are MASSK − PRISM-Evidence. Intervals are 95% percentile intervals of a paired paper-level bootstrap with 20,000 resamples; p-values are two-sided bootstrap values adjusted by the Holm method within each family.
+
+| ID | Variant | Corrected logits | Parameters |
+|---|---|---|---:|
+| V0 | PRISM-Evidence | log p_b | 0 |
+| V1 | MASSK (Full) | log p_b + u·γ_c·(log p_k − log p_b), u = 1 − max p_b | 8 |
+| V2 | Shared γ | as V1 with one γ | 1 |
+| V3 | No multiplier | as V1 with u = 1 | 8 |
+| V4 | Shared γ, no multiplier | log-linear interpolation with a constant weight | 1 |
+| V5 | kNN only | log p_k | 0 |
+| C1 | Temperature scaling | log p_b / τ | 1 |
+| C2 | Class bias | log p_b + b_c | 8 |
+| C3 | Vector scaling | a_c·log p_b + b_c | 16 |
+
+Here p_b is the PRISM-Evidence posterior and p_k the top-5 neighbour class distribution. All learned variants are fitted on identical inner-OOF rows with the procedure described under [Method](#method).
+
+### Development panel
+
+Posteriors are averaged over the two repeats for each of the 6,708 publications ([Table 6.5](results/tables/rev01/table6_5_primary_family.csv)).
+
+| MASSK (V1) compared with | ΔNLL | 95% interval | Holm p | Reading |
+|---|---:|---:|---:|---|
+| PRISM-Evidence (V0) | +0.0104 | [+0.0074, +0.0134] | < 0.001 | The correction lowers NLL |
+| Temperature scaling (C1) | +0.0077 | [+0.0048, +0.0106] | < 0.001 | The gain exceeds recalibration |
+| Class bias (C2) | +0.0129 | [+0.0097, +0.0161] | < 0.001 | The gain exceeds recalibration |
+| Vector scaling (C3) | +0.0084 | [+0.0051, +0.0117] | < 0.001 | The gain exceeds recalibration |
+| Shared γ (V2) | −0.0006 | [−0.0017, +0.0005] | 0.547 | Class-specific coefficients are not supported |
+| No multiplier (V3) | −0.0010 | [−0.0026, +0.0006] | 0.547 | The confidence multiplier is not supported |
+| Shared γ, no multiplier (V4) | −0.0012 | [−0.0031, +0.0006] | 0.547 | Neither element is supported |
+
+The retrieval-conditioned correction improves probability quality beyond three recalibration controls. One shared coefficient without the confidence multiplier is statistically indistinguishable from the eight-coefficient form and has the lower point NLL. Macro-F1 does not change materially in any comparison.
+
+- **Pilot cohort.** On the 5,532 OpenAlex rows the gain over PRISM-Evidence is +0.0099 [+0.0065, +0.0133] with the full retrieval index and +0.0133 [+0.0105, +0.0161] when the 1,176 arXiv pilot rows are removed from every index and the coefficients are refitted ([Table 6.9](results/tables/rev01/table6_9_pilot_exclusion.csv)).
+- **Sensitivity.** MASSK has a lower NLL than PRISM-Evidence in 15 of 16 settings of the neighbour count, the softmax temperature and the probability floor ([Figure 6.2](results/figures/rev01/png/figure6_2_sensitivity.png)).
+- **Frozen retrieval.** With the frozen vectors and no label training, nDCG@10 is 0.7077 for the dual view, 0.7070 for Qwen3 alone and 0.6832 for SPECTER2 alone, as means over the six outer contexts ([Table 6.8](results/tables/rev01/table6_8_frozen_retrieval.csv)).
+
+### Stress evaluation with one specification
+
+The base posterior follows the recorded stress specification, an equal blend of the consensus and interaction paths. B0 is the frozen recorded model, B1 a refit on the same rows, and B2 a refit without the arXiv pilot rows, so that B2 contains no publication later than 2024. For each base the correction and the controls are fitted on the stop rows of that base, and its fit rows form the retrieval index. B2 is the primary base ([Table 6.13](results/tables/rev01/table6_13_stress_primary_family.csv)).
+
+| Cohort | Comparison | ΔNLL | 95% interval | Holm p |
+|---|---|---:|---:|---:|
+| Temporal 2025 | V1 against V0 | +0.0014 | [−0.0046, +0.0068] | > 0.999 |
+| Temporal 2025 | V1 against C1 | +0.0023 | [−0.0034, +0.0076] | > 0.999 |
+| Temporal 2025 | V4 against V0 | +0.0010 | [−0.0026, +0.0045] | > 0.999 |
+| Temporal 2025 | V4 against C1 | +0.0019 | [−0.0012, +0.0050] | 0.858 |
+| External arXiv 2024 | V1 against V0 | −0.0546 | [−0.0737, −0.0369] | < 0.001 |
+| External arXiv 2024 | V1 against C1 | −0.0342 | [−0.0531, −0.0167] | < 0.001 |
+| External arXiv 2024 | V4 against V0 | −0.0422 | [−0.0494, −0.0352] | < 0.001 |
+| External arXiv 2024 | V4 against C1 | −0.0218 | [−0.0276, −0.0161] | < 0.001 |
+
+The development gain does not transfer. The correction is neutral on the temporal cohort and increases NLL on the external cohort for every base: ΔNLL of V1 against V0 is −0.0514, −0.0534 and −0.0546 for B0, B1 and B2 ([Table 6.14](results/tables/rev01/table6_14_stress_across_bases.csv)). Two observations qualify the earlier stress tables:
+
+- The temporal NLL of the base is 0.6646 for the frozen model B0 and 0.6856 for its refit B1 on the same rows. This difference of 0.0210 between two fits exceeds the effect of the correction on that cohort.
+- Removing the pilot rows lowers the external macro-F1 of the base from 0.5509 (B0) to 0.4863 (B2), which is consistent with the pilot rows having acted as same-source training data for the arXiv-hosted cohort.
+
+### Raw-text perturbations and cost
+
+The queries of the temporal cohort were re-encoded from raw text under six conditions with base B2; the models and the retrieval index were unchanged. Fresh and stored embeddings of the clean texts agree, with a mean cosine of 0.99991 for Qwen3 and 0.99999 for SPECTER2 ([Table 6.18](results/tables/rev01/table6_18_encoder_check.csv), [Table 6.19](results/tables/rev01/table6_19_text_perturbations.csv)).
+
+| Condition | Macro-F1 (V0) | NLL (V0) | ΔNLL, V1 against V0 | 95% interval |
+|---|---:|---:|---:|---:|
+| Clean, re-encoded | 0.7754 | 0.6597 | +0.0016 | [−0.0043, +0.0070] |
+| Title only | 0.7585 | 0.6840 | +0.0111 | [+0.0048, +0.0169] |
+| Abstract cut to the first 50% of words | 0.7764 | 0.6585 | +0.0044 | [−0.0013, +0.0096] |
+| Abstract cut to the first 25% of words | 0.7719 | 0.6630 | +0.0040 | [−0.0023, +0.0097] |
+| Random deletion of 10% of words | 0.7715 | 0.6602 | +0.0009 | [−0.0052, +0.0064] |
+| Random deletion of 30% of words | 0.7689 | 0.6709 | +0.0046 | [−0.0010, +0.0099] |
+
+The interval of the correction excludes zero only in the title-only condition. These results are descriptive, and the external cohort was not perturbed.
+
+On an Apple M1 Pro with 16 GB the evaluated system needs 308.4 ms per publication, of which the two frozen encoders account for 99.98%; the base posterior takes 0.035 ms, and exact top-5 retrieval with the correction 0.014 ms per publication ([Table 6.20](results/tables/rev01/table6_20b_cost_inference.csv)). These values are not comparable with the GPU measurements in the [computational profile](#computational-profile).
+
+### Prespecified confirmation on newly acquired publications
+
+The third part of the protocol tests the in-distribution effect once on publications that no earlier analysis had used. The evaluated system (base B2 with V1, V4 and C1) was stored on 10 November 2026 at 13:25:50 UTC. The SHA-256 of the stored file, `c5adf21f83d0829e8aa731558e8b69bb538e1fa9b869814b7154e8e32f564ef6`, was registered in the protocol and in the settings at 13:26:19 UTC, before the first record was requested (13:26:43 UTC); nothing was refitted afterwards. The cohort was requested from OpenAlex with the filter of the development acquisition (2018 to 2024) and three seeds per class that had not been used before. Of the 4,800 records, 2,940 publications remained after the unchanged eligibility and duplicate rules and the removal of matches with the corpus ([identifiers](data_manifest/confirmation_cohort_ids.csv), [Table 6.24](results/tables/rev01/table6_24_confirmation_flow.csv)).
+
+| Variant | Against | ΔNLL | 95% interval | Holm p | Outcome |
+|---|---|---:|---:|---:|---|
+| V4, one shared coefficient | V0, base | +0.0100 | [+0.0076, +0.0123] | < 0.001 | Confirmed |
+| V4, one shared coefficient | C1, temperature scaling | +0.0075 | [+0.0054, +0.0097] | < 0.001 | Confirmed |
+| V1, class-wise with multiplier | V0, base | +0.0053 | [+0.0008, +0.0095] | 0.044 | Not confirmed |
+| V1, class-wise with multiplier | C1, temperature scaling | +0.0028 | [−0.0015, +0.0070] | 0.195 | Not confirmed |
+
+A variant is confirmed only if it is favoured over both the base and temperature scaling after the Holm adjustment and the lower bound of ΔMacro-F1 against the base is at least −0.003 ([Table 6.27](results/tables/rev01/table6_27_confirmation_primary_family.csv)). The one-coefficient correction passes this rule; the class-wise form with the multiplier does not, because it does not exceed temperature scaling. The gain of V4 grows with the similarity to the nearest index publication, from +0.0039 in the two lowest quintiles to +0.0154 and +0.0156 in the two highest ([Table 6.28](results/tables/rev01/table6_28_confirmation_subgroups.csv)). [Figure 6.5](results/figures/rev01/png/figure6_5_gain_across_cohorts.png) places the development, confirmation, temporal and external estimates side by side. The cohort is a new sample from the service that supplied the fit rows, so it tests the in-distribution effect only.
+
+### Topic-level relevance and label stability
+
+- **Topic-level relevance.** For the 5,532 OpenAlex publications of the development panel, 37.9% of the ten nearest neighbours share the subfield of the query and 20.4% share its primary topic, against 24.3% and 1.5% for a random index publication of the same class. Among the queries with a coupled publication in the index, 11.4% of the neighbours share a referenced work with the query, against 0.9% for a random publication of the same class ([Table 6.21](results/tables/rev01/table6_21a_topic_relevance.csv)). Topics are assigned automatically by OpenAlex; no expert judged relevance.
+- **Label stability.** On 10 November 2026 OpenAlex reported the stored field for 67.28% of these publications, another of the eight fields for 12.56% and a field outside the eight classes for 17.53%; 2.62% had no current field ([Table 6.29](results/tables/rev01/table6_29_label_stability.csv)). The confirmation cohort carries the November labels, whereas the fit rows carry the July labels. A post hoc breakdown relates the development predictions to the current label state ([Table 6.30](results/tables/rev01/table6_30_development_by_label_state.csv)).
+
+### Summary
+
+On the development panel the correction yields a small gain in probability quality that recalibration alone does not reproduce. Its class-specific and confidence-weighted form is not needed: the one-coefficient form was confirmed on newly acquired publications and the class-wise form was not. The gain does not carry over to later or differently sourced publications. The release therefore documents a controlled experimental study of the correction and makes no claim of a deployable improvement. All findings are listed in [`nb06_findings.csv`](results/tables/rev01/nb06_findings.csv), and [`result_registry.csv`](results/tables/rev01/result_registry.csv) links each table and figure to its notebook section.
+
 ## Retrieval and concept tagging
 
 Retrieval relevance is defined by shared broad thematic class and is therefore a reproducible proxy, not a substitute for expert relevance assessment.
@@ -203,6 +311,8 @@ Retrieval relevance is defined by shared broad thematic class and is therefore a
 | Development dual-view consensus, K=10 | 0.7785 | — | 0.8338 | 0.7807 |
 | Temporal 2025, K=5 | 0.6946 | 0.9101 | 0.8031 | 0.6856 |
 | External source shift, K=5 | 0.5236 | 0.7341 | 0.6139 | 0.5217 |
+
+The development row was produced in Notebook 04 with projection heads trained on class labels; it does not describe the frozen similarity used by the correction. The values for the frozen vectors are given in [Table 6.8](results/tables/rev01/table6_8_frozen_retrieval.csv) and in the section above.
 
 Closed-vocabulary concept tagging is evaluated separately from classification:
 
@@ -238,8 +348,9 @@ These measurements concern the separately fitted retrospective implementation an
 | [`03_baselines_and_comparators.ipynb`](Notebooks/03_baselines_and_comparators.ipynb) | Classical, embedding-based, and transformer comparator evaluation |
 | [`04_massk_training_and_ablations.ipynb`](Notebooks/04_massk_training_and_ablations.ipynb) | MASSK development, group-safe validation, ablations, and statistical gates |
 | [`05_evaluation_and_results.ipynb`](Notebooks/05_evaluation_and_results.ipynb) | Final tables, retrospective stress evaluation, retrieval, calibration, and efficiency |
+| [`06_revision_ablations_and_corrected_evaluation.ipynb`](Notebooks/06_revision_ablations_and_corrected_evaluation.ipynb) | Run `rev01`: mechanism ablations, calibration controls, single-specification stress evaluation, raw-text perturbations, cost, topic-level relevance, and prespecified confirmation |
 
-The notebooks preserve the original executed analysis record, including intermediate and rejected configurations. Their current files are byte-for-byte copies of the reviewed source notebooks; [SHA-256 hashes and code/output counts](provenance/notebook_manifest.csv) identify this release. No replacement training implementation is provided. YAML files describe the recorded experiments and are not consumed as executable notebook configurations.
+The notebooks preserve the original executed analysis record, including intermediate and rejected configurations. Their current files are byte-for-byte copies of the reviewed source notebooks; [SHA-256 hashes and code/output counts](provenance/notebook_manifest.csv) identify this release. No replacement training implementation is provided. The files `massk.yaml` and `prism_evidence.yaml` describe the recorded experiments and are not consumed as executable notebook configurations. Notebook 06 reads `rev01_experiment.yaml`, which the original layout stores as `Configs/rev01_experiment.yaml`.
 
 ## Viewing the notebooks and data
 
@@ -271,8 +382,9 @@ jupyter lab Notebooks
 | Qwen3 main process in the raw-text benchmark | Transformers 5.12.1; Sentence-Transformers 5.6.0 |
 | Separate SPECTER2 adapter worker | Transformers 4.57.6; Adapters 1.3.0 |
 | Tokenizer version recorded for both benchmark runtimes | Tokenizers 0.22.2 |
+| Notebook 06 (run `rev01`) | Python 3.11.15; PyTorch 2.11.0; Transformers 5.7.0; Tokenizers 0.22.2; NumPy 2.4.4; pandas 2.3.3; SciPy 1.16.3; scikit-learn 1.8.0; Requests 2.33.1; Matplotlib 3.10.9; Apple M1 Pro, 16 GB; encoders on the Apple GPU, other stages on CPU |
 
-These are observed version records, not newly tested installation lockfiles. The two Transformers runtimes must not be collapsed into a single environment when describing the recorded benchmark. Full records are in [`provenance/runtime_versions.csv`](provenance/runtime_versions.csv).
+These are observed version records, not newly tested installation lockfiles. The two Transformers runtimes must not be collapsed into a single environment when describing the recorded benchmark. Full records are in [`provenance/runtime_versions.csv`](provenance/runtime_versions.csv) and, for Notebook 06, in [`configs/rev01_environment.yaml`](configs/rev01_environment.yaml).
 
 ## Reproduction scope
 
@@ -286,8 +398,12 @@ A fresh end-to-end run additionally needs the original permitted title/abstract 
 - Temporal and external values are retrospective stress evaluations.
 - No result in this repository establishes universal model superiority.
 - Retrieval relevance uses broad-class agreement as a proxy.
-- Controlled title-only, truncated-abstract, and token-noise evaluations were not performed in the recorded experiments.
-- Independent confirmation requires a newly acquired cohort collected after the full protocol and model configuration are fixed.
+- Controlled title-only, truncated-abstract and word-deletion evaluations were run only for the temporal cohort (Notebook 06) and are descriptive.
+- Steps 1 and 2 of Notebook 06 are post hoc or retrospective; they reuse the development panel and two cohorts that had been evaluated before.
+- The prespecified confirmation uses a new sample from the service and years of the fit rows. It supports the in-distribution effect of the one-coefficient correction only.
+- OpenAlex labels are not stable: the stored field was still reported for 67.28% of the development publications after four months.
+- Topic-level relevance relies on automatically assigned topics and on shared references; no expert judged relevance.
+- Transfer to other sources, languages and finer taxonomies has not been confirmed and requires its own validation.
 
 ## License
 

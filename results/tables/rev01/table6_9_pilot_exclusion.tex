@@ -1,0 +1,11 @@
+\begin{tabular}{lrllrrrrr}
+\toprule
+evaluation\_rows & publications & model & retrieval\_index & nll & macro\_f1 & delta\_nll & delta\_ci\_low & delta\_ci\_high \\
+\midrule
+OpenAlex & 5532 & PRISM-Evidence & none & $0.578445$ & $0.796366$ & $0$ & $0$ & $0$ \\
+OpenAlex & 5532 & MASSK (Full) & all development rows & $0.568561$ & $0.7973$ & $0.00988426$ & $0.00647399$ & $0.0132847$ \\
+OpenAlex & 5532 & MASSK (Full), refitted & pilot rows excluded & $0.565164$ & $0.799213$ & $0.0132814$ & $0.0104527$ & $0.0160849$ \\
+arXiv pilot & 1176 & PRISM-Evidence & none & $0.446093$ & $0.853706$ & $0$ & $0$ & $0$ \\
+arXiv pilot & 1176 & MASSK (Full) & all development rows & $0.433047$ & $0.852146$ & $0.0130454$ & $0.00649149$ & $0.019261$ \\
+\bottomrule
+\end{tabular}
